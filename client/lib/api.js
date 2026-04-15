@@ -2,9 +2,8 @@ import axios from "axios";
 
 const api = axios.create({
   baseURL:
-    process.env.REACT_APP_API_URL ||
     process.env.NEXT_PUBLIC_API_URL ||
-    "http://localhost:4000",
+    "https://college-bazaar-api.onrender.com",
   withCredentials: true,
 });
 
