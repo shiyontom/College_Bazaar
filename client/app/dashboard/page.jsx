@@ -1,7 +1,6 @@
 "use client";
-export const dynamic = "force-dynamic";
 
-import { Suspense, useMemo } from "react";
+import { Suspense, useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import useSWR from "swr";
@@ -75,12 +74,19 @@ function useListingsQuery() {
 }
 
 function DashboardPageContent() {
+  const [mounted, setMounted] = useState(false);
   const router = useRouter();
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { user } = useAuth();
 
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   const { data, error, isLoading } = useListingsQuery();
+
+  if (!mounted) return null;
 
   const search = searchParams.get("search") || "";
   const sort = searchParams.get("sort") || "newest";

@@ -41,15 +41,18 @@ function isCollegeEmail(email, allowedDomains) {
         ? allowedDomains.map((d) => d.toLowerCase())
         : getAllowedDomains();
 
-    // Fallback: if no allowed domains configured, accept any .edu domain
+    // Fallback: if no allowed domains configured, accept common academic domains
     if (!domains.length) {
-        const isEdu = domain.endsWith(".edu");
+        const isAcademicDomain =
+            domain.endsWith(".edu") ||
+            domain.endsWith(".ac.in") ||
+            domain.endsWith(".edu.in");
         return {
-            valid: isEdu,
+            valid: isAcademicDomain,
             domain,
-            message: isEdu
-                ? "Valid .edu email (development mode)."
-                : "Email domain must end with .edu.",
+            message: isAcademicDomain
+                ? "Valid academic email (fallback mode)."
+                : "Email domain must be an academic domain (.edu, .ac.in, or .edu.in).",
         };
     }
 

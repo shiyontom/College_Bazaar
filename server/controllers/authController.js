@@ -56,7 +56,7 @@ function setAuthCookie(res, token) {
   res.cookie("token", token, {
     httpOnly: true,
     secure: isProduction,
-    sameSite: "strict",
+    sameSite: isProduction ? "none" : "lax",
     maxAge: maxAgeMs,
   });
 }
@@ -175,10 +175,11 @@ const login = [
 // @route   POST /api/auth/logout
 // @access  Public (removes cookie)
 const logout = async (req, res) => {
+  const isProduction = process.env.NODE_ENV === "production";
   res.clearCookie("token", {
     httpOnly: true,
-    sameSite: "strict",
-    secure: process.env.NODE_ENV === "production",
+    sameSite: isProduction ? "none" : "lax",
+    secure: isProduction,
   });
 
   return res

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
@@ -36,13 +36,7 @@ export default function Navbar() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const { theme, setTheme } = useTheme();
-  const [mounted, setMounted] = useState(false);
-  const [search, setSearch] = useState("");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   const isAuthPage = pathname?.startsWith("/auth") || pathname === undefined;
 
@@ -51,14 +45,10 @@ export default function Navbar() {
     return null;
   }
 
-  useEffect(() => {
-    const searchValue = searchParams?.get("search") || "";
-    setSearch(searchValue);
-  }, [searchParams]);
-
   const handleSearchSubmit = (e) => {
     e.preventDefault();
-    const query = search.trim();
+    const form = new FormData(e.currentTarget);
+    const query = String(form.get("search") || "").trim();
     const params = new URLSearchParams();
     if (pathname === "/dashboard" && searchParams) {
       for (const [key, value] of searchParams.entries()) {
@@ -130,9 +120,9 @@ export default function Navbar() {
           <div className="relative w-full max-w-xl">
             <Search className="absolute left-4 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
             <input
+              name="search"
               type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              defaultValue={searchParams?.get("search") || ""}
               placeholder="Search for books, electronics, furniture..."
               className="h-12 w-full rounded-full border border-gray-300 bg-white pl-12 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500 dark:border-slate-600 dark:bg-slate-700 dark:text-slate-100 dark:placeholder-slate-400"
             />
@@ -173,20 +163,18 @@ export default function Navbar() {
                 </Button>
               </Link>
               {/* Dark Mode Toggle */}
-              {mounted && (
-                <button
-                  type="button"
-                  onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-                  className="flex items-center justify-center rounded-full border border-gray-200 bg-white p-2 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
-                  aria-label="Toggle dark mode"
-                >
-                  {theme === "dark" ? (
-                    <Sun className="h-5 w-5 text-gray-600 dark:text-slate-400" />
-                  ) : (
-                    <Moon className="h-5 w-5 text-gray-600" />
-                  )}
-                </button>
-              )}
+              <button
+                type="button"
+                onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
+                className="flex items-center justify-center rounded-full border border-gray-200 bg-white p-2 hover:bg-gray-50 dark:border-slate-700 dark:bg-slate-800 dark:hover:bg-slate-700"
+                aria-label="Toggle dark mode"
+              >
+                {theme === "dark" ? (
+                  <Sun className="h-5 w-5 text-gray-600 dark:text-slate-400" />
+                ) : (
+                  <Moon className="h-5 w-5 text-gray-600" />
+                )}
+              </button>
               {/* Desktop: Dropdown Menu */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
@@ -293,9 +281,9 @@ export default function Navbar() {
           <div className="relative">
             <Search className="absolute left-3 top-1/2 h-5 w-5 -translate-y-1/2 text-gray-400" />
             <input
+              name="search"
               type="text"
-              value={search}
-              onChange={(e) => setSearch(e.target.value)}
+              defaultValue={searchParams?.get("search") || ""}
               placeholder="Search for books, electronics, furniture..."
               className="h-10 w-full rounded-full border border-gray-300 bg-white pl-10 pr-4 text-sm text-gray-900 placeholder:text-gray-400 focus:border-green-500 focus:outline-none focus:ring-1 focus:ring-green-500"
             />
