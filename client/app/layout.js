@@ -1,4 +1,7 @@
+export const dynamic = "force-dynamic";
+
 import { Inter } from "next/font/google";
+import { Suspense } from "react";
 import "./globals.css";
 import { AuthProvider } from "@/context/AuthContext";
 import { ThemeProvider } from "@/components/providers/ThemeProvider";
@@ -28,7 +31,9 @@ export default function RootLayout({ children }) {
       >
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
           <AuthProvider>
-            <Navbar />
+            <Suspense fallback={null}>
+              <Navbar />
+            </Suspense>
             <main className="mx-auto min-h-[calc(100vh-4rem)] max-w-6xl px-4 pb-8 pt-6">
               {children}
             </main>
